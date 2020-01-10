@@ -155,6 +155,11 @@ public class Farm : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Visual effect for when the tree is ready to harvest
+    /// Fruits rodate side to side
+    /// </summary>
     void FruitDance()
     {
         //calculate angle
