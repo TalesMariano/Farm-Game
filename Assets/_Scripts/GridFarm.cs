@@ -4,8 +4,38 @@ using UnityEngine;
 
 public class GridFarm : MonoBehaviour
 {
+    public Planter planter;
+
     [SerializeField]
     public GridSpace[] grid;
+
+
+
+    public void ReceiveClick(Transform transf)
+    {
+        int numGrid;
+        int.TryParse(transf.name, out numGrid);
+
+
+        int planterClickValue = planter.ReceiveInputGrid(grid[numGrid].cell.transform, grid[numGrid].occupied);
+
+        if (planterClickValue == 1)
+            FillCell(numGrid);
+        else if (planterClickValue == 2)
+            EmptyCell(numGrid);
+    }
+
+
+
+    public void FillCell(int numCell)
+    {
+        grid[numCell].occupied = true;
+    }
+
+    public void EmptyCell(int numCell)
+    {
+        grid[numCell].occupied = false;
+    }
 
     [ContextMenu("Get Cell")]
     void GetCell()
@@ -18,6 +48,7 @@ public class GridFarm : MonoBehaviour
 
 
             grid[i].cell = transform.GetChild(i).gameObject;
+            transform.GetChild(i).name = i + "";
         }
     }
 }
@@ -28,5 +59,5 @@ public class GridSpace
     public GameObject cell;
     public bool occupied = false;
     
-    public Farm farm;
+    //public Farm farm;
 }

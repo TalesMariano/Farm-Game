@@ -9,13 +9,6 @@ public class Farm : MonoBehaviour
     public SO_Farms so_farm;    // Scriptable Object with farm info
 
 
-    [Header("Temp Vars")]
-
-
-    public int t_numProducts = 0;
-
-    
-
     [Header("Stats")]
     public CropState cropState = CropState.Empty;
     //Colheita
@@ -219,15 +212,12 @@ public class Farm : MonoBehaviour
 
     public void Collect()
     {
-        //Temp
-        t_numProducts += so_farm.colectQuantity;
+        int collectQuantity = Mathf.FloorToInt(so_farm.colectQuantity *  (1+ (currentLevel * so_farm.colectQuantityImprov))); 
+        int collectReward = collectQuantity * so_farm.product.value;
 
+        UI_Messages.instance.ReceiveMessage("Voce vendeu " + collectQuantity + " " + so_farm.product.productName + " e faturou " + collectReward + " ouros!");
 
-        //End Temp
-
-        UI_Messages.instance.ReceiveMessage("Voce vendeu " + so_farm.colectQuantity + " " + so_farm.product.productName + " e faturou " + so_farm.colectQuantity * 10 + " ouros!");
-
-        GameManager.instance.GainGold(so_farm.colectQuantity * 10);
+        GameManager.instance.GainGold(collectReward);
 
         ResetBar();
     }

@@ -2,6 +2,8 @@
 
 public class Planter : MonoBehaviour
 {
+    GridFarm gridFarm;
+
     public GameObject[] cropPrefabs;
     public int selectCrop = 0;
     public bool planting = false;   // planting crop mode
@@ -14,7 +16,7 @@ public class Planter : MonoBehaviour
     Vector2 hotSpot = Vector2.zero;
     Vector2 hotSpotShovel = new Vector2(10,80);
 
-    public void ReceiveInput(Transform father)
+    public void ReceiveInput(Transform father, bool occupied)
     {
         if (planting)
         {
@@ -24,6 +26,37 @@ public class Planter : MonoBehaviour
         {
             DestroyCrop(father);
         }
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="father"></param>
+    /// <param name="occupied"></param>
+    /// <returns>0 = nothing, 1 = space filled, 2 = space cleared</returns>
+    public int ReceiveInputGrid(Transform father, bool occupied)
+    {
+        if (planting)
+        {
+            if (!occupied)
+            {
+                PlantCrop(father);
+                return 1;
+            }
+            else
+            {
+                UI_Messages.instance.ReceiveMessage("Area Ocupada");
+                return 0;
+            }
+
+        }
+        else if (destroying)
+        {
+            DestroyCrop(father);
+            return 2;
+        }
+        return 0;
     }
 
     /// <summary>

@@ -45,7 +45,6 @@ public class GameManager : MonoBehaviour
 
     public bool CheckGold(int numGold)
     {
-        print(numGold);
         if(numGold<= currentGold)
         {
             return true;
