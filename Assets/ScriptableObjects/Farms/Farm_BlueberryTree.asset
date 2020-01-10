@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d2682b655cc42149841f2fa3075c64b, type: 3}
-  m_Name: Farm_AppleTree
+  m_Name: Farm_BlueberryTree
   m_EditorClassIdentifier: 
-  farmName: Macieira
-  product: {fileID: 11400000, guid: 88c7a78b9e725ab4a9924f0473a5e480, type: 2}
-  level: 1
-  productionTime: 10
+  farmName: "P\xE9 De Mirtilo"
+  product: {fileID: 11400000, guid: 8a6a7277f0b340946ba549da5d096f2c, type: 2}
+  treeColor: {r: 0.25882354, g: 0.36078432, b: 0.8078432, a: 1}
+  productionTime: 30
+  buildingCost: 200
+  levelCost: 200
   colectTime: 60
-  colectQuantity: 3
+  colectQuantity: 10

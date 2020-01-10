@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d2682b655cc42149841f2fa3075c64b, type: 3}
-  m_Name: Farm_OrangeTree
+  m_Name: Farm_PearTree
   m_EditorClassIdentifier: 
-  farmName: Laranjeira
-  product: {fileID: 11400000, guid: 1591eda5af0557248b674c06c117d4d5, type: 2}
-  level: 1
-  productionTime: 20
+  farmName: Pereira
+  product: {fileID: 11400000, guid: 758c34444a552744498fa268dbd3104a, type: 2}
+  treeColor: {r: 0.83921576, g: 0.8000001, b: 0.34509805, a: 1}
+  productionTime: 30
+  buildingCost: 100
+  levelCost: 100
   colectTime: 60
-  colectQuantity: 5
+  colectQuantity: 2

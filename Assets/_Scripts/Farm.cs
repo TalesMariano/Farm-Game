@@ -6,7 +6,7 @@ using TMPro;
 
 public class Farm : MonoBehaviour
 {
-    public SO_Farms so_farm;
+    public SO_Farms so_farm;    // Scriptable Object with farm info
 
 
     [Header("Temp Vars")]
@@ -14,42 +14,88 @@ public class Farm : MonoBehaviour
 
     public int t_numProducts = 0;
 
-    public CropState cropState = CropState.Empty;
-
-    [Header("Stats")]
-
-    //Colheita
-
-    float harvestTimeCurrent = 0;
     
 
+    [Header("Stats")]
+    public CropState cropState = CropState.Empty;
+    //Colheita
 
-    [Header("Bar Progress")]
+    float harvestTimeCurrent = 0;   // Save
+
+
+    [Header("Level System")]
+    public int currentLevel = 1;
+    const int maxLevel = 3;
+
+
+
+    [Header("UI Elements")]
     public Image barFill;
     public Button harvestButton;
     public TMP_Text buttonText;
+    public Image treeImage;
+    public TMP_Text levelText;
 
 
     public Transform[] fruits;
-
-
-    // Start is called before the first frame update
-    void Start()
+    [ContextMenu("Awake")]
+    void Awake()
     {
+        SetupTreeNFruits();
         
     }
 
     // Update is called once per frame
     void Update()
     {
+        float growSpeed = 1 + ((float)currentLevel * so_farm.productionTimeImprov);
+
+
         if(cropState == CropState.Growing)
-            harvestTimeCurrent += Time.deltaTime;
+            harvestTimeCurrent += Time.deltaTime * growSpeed;
 
 
         FillBar();
         UpdBarText();
     }
 
+
+
+    void SaveInfo()
+    {
+
+    }
+
+    void LoadInfo()
+    {
+
+    }
+
+
+    public void LevelUp()
+    {
+        if (currentLevel < maxLevel)
+            currentLevel++;
+
+        GameManager.instance.LoseGold(currentLevel * so_farm.levelCost);
+
+        levelText.text = "Lv. " + currentLevel; // Print Text;
+    }
+
+    /// <summary>
+    /// Make all Fruits get image from SO and color tree
+    /// </summary>
+    [ContextMenu("Setup Fruits")]
+    void SetupTreeNFruits()
+    {
+        treeImage.color = so_farm.treeColor; // paint tree acording S.O.
+
+        // Set Fruit sprites
+        foreach (var item in fruits)
+        {
+            item.GetComponent<Image>().sprite = so_farm.product.sprite;
+        }
+    }
 
     void UpdBarText()
     {
@@ -66,6 +112,7 @@ public class Farm : MonoBehaviour
             case CropState.Growing:
             {
                 buttonText.text = "Crescendo";
+
                     harvestButton.interactable = false;
                     break;
             }
@@ -73,6 +120,8 @@ public class Farm : MonoBehaviour
             case CropState.Done:
             {
                 buttonText.text = "Colher!";
+
+                    FruitDance();
                 break;
             }
         }
@@ -89,9 +138,24 @@ public class Farm : MonoBehaviour
 
         if (cropState == CropState.Done)
         {
-            cropState = CropState.Empty;
+            cropState = CropState.Growing;
             Collect();
 
+        }
+    }
+
+    void FruitDance()
+    {
+        //calculate angle
+        float multiValue = Mathf.Cos(Time.timeSinceLevelLoad * 3);
+
+        const float angle = 10;
+
+        float zAngle = angle * multiValue;
+
+        foreach (var item in fruits)
+        {
+            item.localRotation = Quaternion.Euler(0, 0, zAngle);
         }
     }
 
@@ -108,6 +172,8 @@ public class Farm : MonoBehaviour
         float fillAmount = harvestTimeCurrent / so_farm.productionTime;
 
         fillAmount = Mathf.Clamp01(fillAmount);
+
+        barFill.fillAmount = fillAmount;
 
         //Temp
         foreach (var item in fruits)
@@ -143,7 +209,9 @@ public class Farm : MonoBehaviour
 
         //End Temp
 
-        UI_Messages.instance.ReceiveMessage("Voce Coletou " + so_farm.colectQuantity + " " + so_farm.product.productName);
+        UI_Messages.instance.ReceiveMessage("Voce vendeu " + so_farm.colectQuantity + " " + so_farm.product.productName + " e faturou " + so_farm.colectQuantity * 10 + " ouros!");
+
+        GameManager.instance.GainGold(so_farm.colectQuantity * 10);
 
         ResetBar();
     }

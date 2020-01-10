@@ -1,25 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public int currentGold = 100;
+    [SerializeField]
+    public int currentGold = 0;
 
 
-    public GameObject prefabAppleTree;
-    public bool plantAppleTree = false;
+    public static GameManager instance;
+
+    [Header("Ui Elements")]
+    public TMP_Text goldText;
 
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        instance = this;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        goldText.text = "Ouro = " + currentGold;
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            GainGold(100);
+        }
+    }
+
+
+    public void LoseGold(int numGold)
+    {
+        currentGold -= numGold;
+    }
+
+    public void GainGold(int numGold)
+    {
+        currentGold += numGold;
     }
 }
