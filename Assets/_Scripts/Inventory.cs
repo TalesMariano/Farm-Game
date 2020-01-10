@@ -16,22 +16,23 @@ public class Inventory : MonoBehaviour
     public TMP_Text text;
 
 
-
+    [ContextMenu("Fill Text")]
     void FillText()
     {
         textInv = "";
 
         for (int i = 0; i < products.Length; i++)
         {
-            textInv = products[i].productName + " x " + numThings[i] + "\n";
+            textInv += products[i].productName + " x " + numThings[i] + "\n";
         }
 
-
+        PrintText();
     }
 
 
     void PrintText()
     {
         text.text = textInv;
+
     }
 }

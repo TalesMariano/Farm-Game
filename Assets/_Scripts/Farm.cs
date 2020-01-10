@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Farm : MonoBehaviour
 {
@@ -13,12 +14,12 @@ public class Farm : MonoBehaviour
 
     public int t_numProducts = 0;
 
+    public CropState cropState = CropState.Empty;
 
     [Header("Stats")]
 
     //Colheita
 
-    float harvestTimeTotal = 20;
     float harvestTimeCurrent = 0;
     
 
@@ -26,6 +27,10 @@ public class Farm : MonoBehaviour
     [Header("Bar Progress")]
     public Image barFill;
     public Button harvestButton;
+    public TMP_Text buttonText;
+
+
+    public Transform[] fruits;
 
 
     // Start is called before the first frame update
@@ -37,20 +42,82 @@ public class Farm : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(cropState == CropState.Growing)
+            harvestTimeCurrent += Time.deltaTime;
 
-        harvestTimeCurrent += Time.deltaTime;
+
         FillBar();
+        UpdBarText();
+    }
+
+
+    void UpdBarText()
+    {
+        switch (cropState)
+        {
+            case CropState.Empty:
+            {
+                buttonText.text = "Plantar";
+                    harvestButton.interactable = true;
+
+                    break;
+            }
+
+            case CropState.Growing:
+            {
+                buttonText.text = "Crescendo";
+                    harvestButton.interactable = false;
+                    break;
+            }
+
+            case CropState.Done:
+            {
+                buttonText.text = "Colher!";
+                break;
+            }
+        }
+    }
+
+
+    public void ButtonPress()
+    {
+        if(cropState == CropState.Empty)
+        {
+            cropState = CropState.Growing;
+
+        }
+
+        if (cropState == CropState.Done)
+        {
+            cropState = CropState.Empty;
+            Collect();
+
+        }
+    }
+
+    void OnGrowComplete()
+    {
+        harvestButton.interactable = true;
+        cropState = CropState.Done;
 
     }
 
 
     void FillBar()
     {
-        barFill.fillAmount = harvestTimeCurrent / harvestTimeTotal;
+        float fillAmount = harvestTimeCurrent / so_farm.productionTime;
 
-        if (harvestTimeCurrent / harvestTimeTotal > 1)
+        fillAmount = Mathf.Clamp01(fillAmount);
+
+        //Temp
+        foreach (var item in fruits)
         {
-            harvestButton.interactable = true;
+            item.localScale = Vector3.one * fillAmount;
+        }
+
+        if (fillAmount >= 1) // Caso já se tenha treminado de crescer
+        {
+            OnGrowComplete();
         }
     }
 
@@ -79,5 +146,12 @@ public class Farm : MonoBehaviour
         UI_Messages.instance.ReceiveMessage("Voce Coletou " + so_farm.colectQuantity + " " + so_farm.product.productName);
 
         ResetBar();
+    }
+
+    public enum CropState
+    {
+        Empty,
+        Growing,
+        Done
     }
 }

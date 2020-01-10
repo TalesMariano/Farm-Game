@@ -7,5 +7,7 @@ public class SO_Product : ScriptableObject
 {
     public string productName;
 
+    public Sprite sprite;
+
     public int value;
 }
