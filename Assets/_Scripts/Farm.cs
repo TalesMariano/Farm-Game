@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -8,18 +6,15 @@ public class Farm : MonoBehaviour
 {
     public SO_Farms so_farm;    // Scriptable Object with farm info
 
-
     [Header("Stats")]
     public CropState cropState = CropState.Empty;
-    //Colheita
 
-    float harvestTimeCurrent = 0;   // Save
+    float harvestTimeCurrent = 0;   /// current time of fruit grown
 
 
     [Header("Level System")]
-    public int currentLevel = 1;
+    public int currentLevel = 0;    // Current level of tree, the bigger the level better the tree performs
     const int maxLevel = 3;
-
 
 
     [Header("UI Elements")]
@@ -28,9 +23,9 @@ public class Farm : MonoBehaviour
     public TMP_Text buttonText;
     public Image treeImage;
     public TMP_Text levelText;
-
-
     public Transform[] fruits;
+
+
     [ContextMenu("Awake")]
     void Awake()
     {
@@ -38,13 +33,11 @@ public class Farm : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float growSpeed = 1 + ((float)currentLevel * so_farm.productionTimeImprov);
+        float growSpeed = 1 + ((float)currentLevel * so_farm.productionTimeImprov); // How fast the fruit grow, based on tree level
 
-
-        if(cropState == CropState.Growing)
+        if(cropState == CropState.Growing)      // Only grow fruit if tree is the growing stage
             harvestTimeCurrent += Time.deltaTime * growSpeed;
 
 
@@ -53,22 +46,10 @@ public class Farm : MonoBehaviour
     }
 
 
-
-    void SaveInfo()
-    {
-
-    }
-
-    void LoadInfo()
-    {
-
-    }
-
-
     public void LevelUp()
     {
         if (currentLevel < maxLevel) {
-            int cost = (currentLevel + 1) * so_farm.levelCost;
+            int cost = (currentLevel + 1) * so_farm.levelCost;  // Calculate the cost in gold of leveling up
 
             if (!GameManager.instance.CheckGold(cost))  // if there is not enouth gold, dont select seed
                 return;
@@ -151,7 +132,7 @@ public class Farm : MonoBehaviour
 
     /// <summary>
     /// Visual effect for when the tree is ready to harvest
-    /// Fruits rodate side to side
+    /// Fruits rotate side to side
     /// </summary>
     void FruitDance()
     {
@@ -172,10 +153,11 @@ public class Farm : MonoBehaviour
     {
         harvestButton.interactable = true;
         cropState = CropState.Done;
-
     }
 
-
+    /// <summary>
+    /// Fill status bar and scale fruit for visual feedback
+    /// </summary>
     void FillBar()
     {
         float fillAmount = harvestTimeCurrent / so_farm.productionTime;
@@ -201,15 +183,17 @@ public class Farm : MonoBehaviour
         barFill.fillAmount = 0;
         harvestTimeCurrent = 0;
 
+        foreach (var item in fruits)
+        {
+            item.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+
         harvestButton.interactable = false;
     }
 
-
-    public void OnHover()
-    {
-
-    }
-
+    /// <summary>
+    /// Collect fruit and reward the player based on fruit ammount and value
+    /// </summary>
     public void Collect()
     {
         int collectQuantity = Mathf.FloorToInt(so_farm.colectQuantity *  (1+ (currentLevel * so_farm.colectQuantityImprov))); 
@@ -225,7 +209,7 @@ public class Farm : MonoBehaviour
     public enum CropState
     {
         Empty,
-        Growing,
-        Done
+        Growing,    // fruit growing
+        Done        // Fruit ready to harvest
     }
 }
