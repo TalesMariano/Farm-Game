@@ -74,12 +74,23 @@ public class Farm : MonoBehaviour
 
     public void LevelUp()
     {
-        if (currentLevel < maxLevel)
+        if (currentLevel < maxLevel) {
+            int cost = (currentLevel + 1) * so_farm.levelCost;
+
+            if (!GameManager.instance.CheckGold(cost))  // if there is not enouth gold, dont select seed
+                return;
+
+
             currentLevel++;
 
-        GameManager.instance.LoseGold(currentLevel * so_farm.levelCost);
+            GameManager.instance.LoseGold(cost);
 
-        levelText.text = "Lv. " + currentLevel; // Print Text;
+            // Update level Text;
+            if (currentLevel == maxLevel)
+                levelText.text = "Lv. Max" ;
+            else
+                levelText.text = "Lv. " + currentLevel; 
+        }
     }
 
     /// <summary>

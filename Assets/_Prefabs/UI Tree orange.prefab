@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 4543983138435380101, guid: 2effff4542325dc478cc6ad2e4bfa291,
         type: 3}
       propertyPath: m_Name
-      value: UI Tree orange
+      value: UI Tree Orange
       objectReference: {fileID: 0}
     - target: {fileID: 4543983138435380100, guid: 2effff4542325dc478cc6ad2e4bfa291,
         type: 3}

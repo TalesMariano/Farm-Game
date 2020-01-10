@@ -40,4 +40,20 @@ public class GameManager : MonoBehaviour
     {
         currentGold += numGold;
     }
+
+
+
+    public bool CheckGold(int numGold)
+    {
+        print(numGold);
+        if(numGold<= currentGold)
+        {
+            return true;
+        }
+        else
+        {
+            UI_Messages.instance.ReceiveMessage("Sem Ouro Suficiente");
+            return false;
+        }
+    }
 }
